@@ -43,6 +43,8 @@ pipeline {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'EC2_USER')]) {
                     bat 'copy "%SSH_KEY%" ec2_key.pem'
+                    bat 'icacls ec2_key.pem /inheritance:r'
+                    bat 'icacls ec2_key.pem /grant:r "%USERNAME%:(R)"'
                     bat "ssh -o StrictHostKeyChecking=no -i ec2_key.pem %EC2_USER%@%EC2_IP% \"docker pull ${REGISTRY}/${IMAGE_NAME}:${TAG} && docker stop flask-app || true && docker rm flask-app || true && docker run -d --name flask-app -p 80:80 ${REGISTRY}/${IMAGE_NAME}:${TAG}\""
                     bat 'del ec2_key.pem'
                 }
