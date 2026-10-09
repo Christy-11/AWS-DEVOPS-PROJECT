@@ -5,6 +5,7 @@ pipeline {
         REGISTRY = "ghcr.io"
         IMAGE_NAME = "christy-11/aws-devops-project"
         TAG = "latest"
+        EC2_IP = "13.203.157.207"
     }
 
     stages {
@@ -40,8 +41,9 @@ pipeline {
 
         stage('Deploy to EC2') {
             steps {
-                echo "Deploying to AWS EC2 instance..."
-                // We will connect via SSH or use your SSH key stored in Jenkins
+                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'EC2_USER')]) {
+                    bat "ssh -o StrictHostKeyChecking=no -i \"%SSH_KEY%\" %EC2_USER%@%EC2_IP% \"docker pull ${REGISTRY}/${IMAGE_NAME}:${TAG} && docker stop flask-app || true && docker rm flask-app || true && docker run -d --name flask-app -p 80:80 ${REGISTRY}/${IMAGE_NAME}:${TAG}\""
+                }
             }
         }
     }
