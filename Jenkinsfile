@@ -25,7 +25,7 @@ pipeline {
         stage('Login to GHCR') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'Cath-git', usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
-                    sh 'echo $GH_TOKEN | docker login ghcr.io -u $GH_USER --password-stdin'
+                    bat 'echo %GH_TOKEN% | docker login ghcr.io -u %GH_USER% --password-stdin'
                 }
             }
         }
