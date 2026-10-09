@@ -37,5 +37,12 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to EC2') {
+            steps {
+                echo "Deploying to AWS EC2 instance..."
+                // We will connect via SSH or use your SSH key stored in Jenkins
+            }
+        }
     }
 }
