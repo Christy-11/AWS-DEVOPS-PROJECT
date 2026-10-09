@@ -17,14 +17,14 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    app = docker.build("${REGISTRY}/${IMAGE_NAME}:${TAG}")
+                    def app = docker.build("${REGISTRY}/${IMAGE_NAME}:${TAG}")
                 }
             }
         }
 
         stage('Login to GHCR') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'ghcr-credentials', usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
+                withCredentials([usernamePassword(credentialsId: 'Cath-git', usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
                     sh 'echo $GH_TOKEN | docker login ghcr.io -u $GH_USER --password-stdin'
                 }
             }
